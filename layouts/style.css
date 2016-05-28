@@ -1,0 +1,104 @@
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,700);
+html, button, input, select, textarea,
+.pure-g [class *= "pure-u"] {
+  font-family: "Source Sans Pro", sans-serif;
+}
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+body {
+  font-weight: 300;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.container {
+  margin: 1rem;
+}
+
+.team {
+  margin: 0 1rem;
+}
+
+.player {
+  padding: 1rem;
+  color: #eee;
+  background: #16222a;
+  background: -webkit-linear-gradient(to top, #16222a , #3a6073);
+  background: linear-gradient(to top, #16222a , #3a6073);
+}
+
+.player__name {
+  font-weight: 700;
+  margin: 0;
+}
+
+.spells {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.spells__single {
+  float: left;
+  padding: 0 .3rem;
+}
+.stats__heading {
+  font-size: 1.6rem;
+}
+
+.gauge {
+  border: .5rem solid #ddd;
+  border-radius: 50%;
+  width: 4.5vw;
+  height: 4.5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  font-weight: 700;
+}
+
+.kda {
+  text-transform: uppercase;
+  font-size: 2rem;
+  letter-spacing: .4rem;
+  margin: .3rem 0;
+}
+
+.kda-details {
+  margin: 0;
+  letter-spacing: .1rem;
+}
+
+.damage-share,
+.screep-score {
+  display: flex;
+  align-items: center;
+}
+
+.screep-score__title {
+  font-size: 4rem;
+  margin: 0;
+}
+
+.screep-score__details {
+  padding-left: .3rem;
+}
+
+.match {
+  margin: .5rem 0;
+}
+.match__time {
+  margin: 3rem 0;
+}
+.match__team {
+  padding: 3rem;
+  background: #ddd;
+}
+.match__summoner {
+  display: block;
+  text-decoration: none;
+  color: #333;
+}
