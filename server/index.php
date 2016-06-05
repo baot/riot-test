@@ -13,9 +13,11 @@ $app = new \Klein\Klein();
 $regionController = new Controllers\RegionController($riotClient);
 $gameController = new Controllers\GameController($riotClient);
 $summonerController = new Controllers\SummonerController($riotClient);
+$championController = new Controllers\ChampionController($riotClient);
 
 $app->respond('GET', '/dev-test/server/regions', [$regionController, 'getAllRegions']);
 $app->respond('GET', '/dev-test/server/[:region]/games', [$gameController, 'getFeaturedGames']);
 $app->respond('GET', '/dev-test/server/[:region]/records/by-name/[:summonerName]', [$summonerController, 'getRecordsOfSummoner']);
+$app->respond('GET', '/dev-test/server/[:region]/champion/[:championId]', [$championController, 'getChampionById']);
 
 $app->dispatch();
