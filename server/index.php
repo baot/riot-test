@@ -10,8 +10,10 @@ use Klein\ServiceProvider;
 $riotClient = new RiotClient("27bec553-bfba-470e-a5c6-902fb6f0b0ff");
 $app = new \Klein\Klein();
 
-$regionController = new Controllers\RegionController($riotClient, $consumer);
+$regionController = new Controllers\RegionController($riotClient);
+$gameController = new Controllers\GameController($riotClient);
 
 $app->respond('GET', '/dev-test/server/regions', [$regionController, 'getAllRegions']);
+$app->respond('GET', '/dev-test/server/[:region]/games', [$gameController, 'getFeaturedGames']);
 
 $app->dispatch();

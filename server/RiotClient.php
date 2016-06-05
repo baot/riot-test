@@ -30,4 +30,21 @@ class RiotClient
         $this->api_key = $api_key;
         $this->api_host = 'api.pvp.net';
     }
+
+    /*
+     * Do a request to riot api
+     *
+     * @param region $region
+     * @param string $path
+     * @param array $params
+     * @return \Server\Response
+     */
+    public function request($region, $path, array $params = [])
+    {
+        $params["api_key"] = $this->api_key;
+        $url = 'https://' . $region . '.' . $this->api_host . $path . '?' . http_build_query($params);
+        error_log(print_r($url, TRUE));
+        $response = HttpReq::get($url)->send();
+        return $response;
+    }
 }
