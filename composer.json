@@ -13,6 +13,9 @@
         "klein/klein": "2.1.0",
         "bandwidth-throttle/token-bucket": "^0.4.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "5.4.*"
+    },
     "autoload": {
         "psr-4": {
             "Server\\":"server"
