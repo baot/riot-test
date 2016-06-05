@@ -58,7 +58,13 @@ class SummonerController extends AbstractController
                 $this->makeErrorResponse($resp, 404);
             } else {
                 // TODO: refactor the url path methods
-                $path = '/api/lol/'. $location . '/' . $this->versions['1.3'] . '/game/by-summoner/'. $summoner->id . '/recent';
+                $path = '/api/lol/'
+                    . $location
+                    . '/'
+                    . $this->versions['1.3']
+                    . '/game/by-summoner/'
+                    . $summoner->id
+                    . '/recent';
                 $respond = $this->request($location, false, $path);
                 if ($respond->code === 200) {   // REQUEST SUCCESS
                     $record = array();
@@ -83,7 +89,13 @@ class SummonerController extends AbstractController
         if (is_null($summonerId) || is_null($location)) {
             $this->makeErrorResponse($resp, 404);
         } else {
-            $path = '/api/lol/'. $location . '/' . $this->versions['1.3'] . '/game/by-summoner/'. $summonerId . '/recent';
+            $path = '/api/lol/'
+                . $location
+                . '/'
+                . $this->versions['1.3']
+                . '/game/by-summoner/'
+                . $summonerId
+                . '/recent';
             $respond = $this->request($location, false, $path);
             if ($respond->code === 200) {   // REQUEST SUCCESS
                 $record = array();

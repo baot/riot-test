@@ -53,7 +53,14 @@ class GameController extends AbstractController
                     foreach ($data->participants as $summoner) {
                         $teams[$summoner->teamId][] = $summoner;
                     }
-                    $game = new Game($data->gameId, $data->gameMode, $data->gameType, $data->gameStartTime, $teams, $data->platformId);
+                    $game = new Game(
+                        $data->gameId,
+                        $data->gameMode,
+                        $data->gameType,
+                        $data->gameStartTime,
+                        $teams,
+                        $data->platformId
+                    );
                     // check platform id of the game to make sure it in the region
                     if ($this->platformList[$data->platformId] == $region) {
                         $gameList[] = $game;
@@ -93,17 +100,16 @@ class GameController extends AbstractController
                 if ($matchRespond->code === 200) {  // REQUEST SUCCESS
                     $teams = array();
                     // seperates the teams
-                    
                     foreach ($matchRespond->body->participants as $summoner) {
                         $teams[$summoner->teamId][] = $summoner;
                     }
 
                     $game = new Game(
-                        $matchRespond->body->gameId, 
-                        $matchRespond->body->gameMode, 
+                        $matchRespond->body->gameId,
+                        $matchRespond->body->gameMode,
                         $matchRespond->body->gameType, 
-                        $matchRespond->body->gameStartTime, 
-                        $teams, 
+                        $matchRespond->body->gameStartTime,
+                        $teams,
                         $matchRespond->body->platformId
                     );
                     $resp->json($game);
