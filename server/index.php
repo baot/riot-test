@@ -10,10 +10,8 @@ use Klein\ServiceProvider;
 $riotClient = new RiotClient("27bec553-bfba-470e-a5c6-902fb6f0b0ff");
 $app = new \Klein\Klein();
 
+$regionController = new Controllers\RegionController($riotClient, $consumer);
 
-$app->respond('GET', '/dev-test/server/regions', function(Request $req, Response $resp, ServiceProvider $service) {
-    $region_arr = ["br", "eune", "euw", "jp", "kr", "lan", "las", "na", "oce", "tr", "ru", "pbe"];
-    $resp->json($region_arr);
-});
+$app->respond('GET', '/dev-test/server/regions', [$regionController, 'getAllRegions']);
 
 $app->dispatch();
