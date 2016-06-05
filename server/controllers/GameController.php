@@ -42,7 +42,7 @@ class GameController extends AbstractController
     {
         $region = $req->paramsNamed()->get('region', null);
         if (is_null($region)) {
-            $this->make_error_response($resp, 404);
+            $this->makeErrorResponse($resp, 404);
         } else {
             $response = $this->request($region, '/observer-mode/rest/featured');
             if ($response->code === 200) {  // REQUEST SUCCESS
@@ -61,9 +61,8 @@ class GameController extends AbstractController
                 }
                 $resp->json($gameList);
             } else {   // REQUEST FAIL
-                $this->make_error_response($resp, $resp->code);
+                $this->makeErrorResponse($resp, $resp->code);
             }
         }
     }
-
 }

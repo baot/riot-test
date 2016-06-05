@@ -59,7 +59,7 @@ abstract class AbstractController
      * @param int $error_status
      */
 
-    public function make_error_response(Response $resp, $error_status)
+    public function makeErrorResponse(Response $resp, $error_status)
     {
         //default error
         $message = "error";
@@ -71,4 +71,3 @@ abstract class AbstractController
         $resp->json(['error' => $message]);
     }
 }
-
