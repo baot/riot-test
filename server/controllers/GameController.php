@@ -44,7 +44,7 @@ class GameController extends AbstractController
         if (is_null($region)) {
             $this->makeErrorResponse($resp, 404);
         } else {
-            $response = $this->request($region, '/observer-mode/rest/featured');
+            $response = $this->request($region, false, '/observer-mode/rest/featured');
             if ($response->code === 200) {  // REQUEST SUCCESS
                 $gameList = [];
                 foreach ($response->body->gameList as $data) {
@@ -64,5 +64,55 @@ class GameController extends AbstractController
                 $this->makeErrorResponse($resp, $resp->code);
             }
         }
+    }
+
+    /*
+     * Get match information based on summoner name
+     *
+     * @param Klein\Request $req
+     * @param Klein\Response $resp
+     * @param Klein\ServiceProvider $service
+     */
+    public function getGameBySummonerName ($req, Response $resp, ServiceProvider $service)
+    {
+        $summonerName = $req->paramsNamed()->get('summonerName', null);
+        $region = $req->paramsNamed()->get('region', null);
+        if (is_null($summonerName) || is_null($region)) {
+            $this->makeErrorResponse($resp, 404);
+        } else {
+            $name = strtolower($summonerName);
+            $name  = preg_replace('/\s+/', '', $name);
+            $path = '/api/lol/' . $region . '/v1.4/summoner/by-name/' . $name;
+            $idRespond = $this->request($region, false, $path);
+            if ($idRespond->code === 200) {
+                $summonerId = $idRespond->body->$name->id;
+                $platformId = array_search($region, $this->platformList);
+                $path = '/observer-mode/rest/consumer/getSpectatorGameInfo/' . $platformId . '/'. $summonerId;
+                $matchRespond = $this->request($region, false, $path);
+
+                if ($matchRespond->code === 200) {  // REQUEST SUCCESS
+                    $teams = array();
+                    // seperates the teams
+                    
+                    foreach ($matchRespond->body->participants as $summoner) {
+                        $teams[$summoner->teamId][] = $summoner;
+                    }
+
+                    $game = new Game(
+                        $matchRespond->body->gameId, 
+                        $matchRespond->body->gameMode, 
+                        $matchRespond->body->gameType, 
+                        $matchRespond->body->gameStartTime, 
+                        $teams, 
+                        $matchRespond->body->platformId
+                    );
+                    $resp->json($game);
+                } else {    // REQUEST FAIL
+                    $this->makeErrorResponse($resp, $matchRespond->code);
+                }
+            } else {
+                $this->makeErrorResponse($resp, $idRespond->code);
+            }
+        }    
     }
 }

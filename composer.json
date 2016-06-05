@@ -10,7 +10,8 @@
     "require": {
         "php": ">=5.5.0",
         "nategood/httpful": "0.2.0",
-        "klein/klein": "2.1.0"
+        "klein/klein": "2.1.0",
+        "bandwidth-throttle/token-bucket": "^0.4.0"
     },
     "autoload": {
         "psr-4": {

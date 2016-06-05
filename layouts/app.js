@@ -31,7 +31,7 @@ var RegionComponent = {
     view: function(ctrl) {
         return ([
             ctrl.regions().map(function(regionName, id) {
-                return m('p', 
+                return m('div',
                     m('button',
                         {
                             class: 'pure-button',
@@ -51,6 +51,10 @@ var RegionComponent = {
 
 // model Game
 var Game = {
+    game: function(region, summonerName) {
+        var url = '/dev-test/server/' + region + '/currentGame/' + summonerName;
+        return m.request({method: 'GET', url: url});
+    },
     list: function (region) {
         var url = '/dev-test/server/' + region + '/games';
         return m.request({method: 'GET', url: url});
@@ -102,7 +106,8 @@ var GameComponent = {
                                             return m('a',
                                                         {
                                                             class: 'match__summoner', 
-                                                            href: '/match/' + summoner.summonerName //TODO: handle url
+                                                            href: '/' + ctrl.region + '/match/' + summoner.summonerName,
+                                                            config: m.route
                                                         }, 
                                                         summoner.summonerName
                                                     );
@@ -116,6 +121,103 @@ var GameComponent = {
     }
 };
 
+// model Participant
+var Participant = {
+    list: function (teams) {
+        var results = [];
+        Object.keys(teams).forEach(function(teamId) {
+            results.push(teams[teamId]);
+        });
+        return results;
+    },
+    statistic: function(summonerId, region) {
+        var url = '/dev-test/server/' + region + '/records/by_id/' + summonerId;
+        return m.request({method: 'GET', url: url});
+    }
+};
 
+// model Champion
+var Champion = {
+    data: function(championId, region) {
+        var url = '/dev-test/server/' + region + '/champion/' + championId;
+        return m.request({method: 'GET', url: url});
+    }
+};
 
-m.mount(document.getElementsByClassName('pure-u-1 pure-u-sm-3-5')[0], RegionComponent);
+var ParticipantChampion = {
+    controller: function(args) {
+        var statistic = m.prop("");
+        Participant.statistic(args.summonerId, args.region).then(function(record) {
+            statistic(record.toString());
+        });
+        var champion = m.prop(null);
+        Champion.data(args.championId, args.region).then(function(champ){
+            champion({
+                avatar: champ.avatar.full,
+                spells: champ.spells
+            });
+        });
+        return {
+            statistic: statistic,
+            champion: champion
+        };
+    },
+    view: function(ctrl) {
+        return m('div', 
+            [ctrl.champion() ? 
+                m('div', {class: 'pure-u-1 pure-u-sm-1-4'},
+                        m('ul',{class: 'spells'},
+                            [ 
+                                ctrl.champion().spells.map(function(spellIcon) {
+                                    return m('li',{class:'spells__single'},
+                                        m('img',{
+                                            style: 'width: 25px',
+                                            src: 'http://ddragon.leagueoflegends.com/cdn/6.11.1/img/spell/' + spellIcon.full
+                                        }));
+                                })
+                            ]
+                        ),
+                        m('img', {src: 'http://ddragon.leagueoflegends.com/cdn/6.11.1/img/champion/' + ctrl.champion().avatar})
+                ) : m(''),
+                m('div',{class: 'pure-u-1 pure-u-sm-1-4'}, 
+                    m('h1', ctrl.statistic().replace(/,/g, ' ')))
+        ]);
+    }
+};
+
+var ParticipantChampionListComponent = {
+    controller: function() {
+        var region = m.route.param('region');
+        var summonerName = m.route.param('summonerName');
+        var teams = m.prop();
+        Game.game(region, summonerName).then(function(game) {
+            var data = Participant.list(game.teams);
+            teams(data);
+        });
+        return {
+            summonerName: summonerName,
+            region: region,
+            teams: teams
+        };
+    },
+    
+    view: function(ctrl) {
+        return m("div", [
+            ctrl.teams() ? ctrl.teams().map(function(team) {
+                return m('div', {class: 'team'}, team.map(function(summoner){
+                    return m('div', {class: 'pure-g player'},[
+                            
+                            m.component(ParticipantChampion, {region: ctrl.region, championId: summoner.championId, summonerId: summoner.summonerId}),
+                            m('h',{class: 'pure-u-1 pure-u-sm-1-4'}, summoner.summonerName)
+                    ]);
+                }));
+            }) : m('div')
+
+        ]);               
+    }
+    };
+
+m.route(document.getElementById('app'), '/', {
+    '/' : RegionComponent,
+    '/:region/match/:summonerName' : ParticipantChampionListComponent
+});

@@ -39,9 +39,10 @@ class RiotClient
      * @param array $params
      * @return \Server\Response
      */
-    public function request($region, $path, array $params = [])
+    public function request($region, $path, $params = [])
     {
         $params["api_key"] = $this->api_key;
+        error_log(http_build_query($params));
         $url = 'https://' . $region . '.' . $this->api_host . $path . '?' . http_build_query($params);
         error_log(print_r($url, TRUE));
         $response = HttpReq::get($url)->send();

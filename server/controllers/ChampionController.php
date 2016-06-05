@@ -27,9 +27,9 @@ class ChampionController extends AbstractController
         if (is_null($championId) || is_null($location)) {
             $this->makeErrorResponse($resp, 404);
         } else {
-            $path = "/api/lol/static-data/" . $location . "/v1.2/champion/" . $championId;
+            $path = "/api/lol/static-data/" . $location . "/v1.2/champion/" . $championId . "/";
             // global is passed bc of static-data
-            $respond = $this->request("global", $path, ["champData" => "all"]);
+            $respond = $this->request("global", true, $path, ["champData" => "all"]);
             if ($respond->code === 200) {
                 $spellIcons = array();
                 foreach ($respond->body->spells as $spell) {
